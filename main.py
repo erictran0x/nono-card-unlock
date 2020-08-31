@@ -1,5 +1,6 @@
 from eagate_client import EAGateClient
 from getpass import getpass
+from os import environ
 from requests import ConnectionError, Timeout
 import argparse
 import logging
@@ -44,6 +45,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO,
                         format='%(asctime)s - %(levelname)s: %(message)s')
-    email = args.email or input('Enter eagate email: ')
-    password = args.password or getpass('Enter eagate password: ')
+    email = args.email or environ['eagate-EMAIL'] or input('Enter eagate email: ')
+    password = args.password or environ['eagate-PASSWORD'] or getpass('Enter eagate password: ')
     main(email, password)
