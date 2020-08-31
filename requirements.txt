@@ -26,6 +26,7 @@ msgpack==1.0.0
 networkx==2.5
 numpy==1.19.1
 opencv-python==4.4.0.42
+opencv-python-headless==4.2.0.32
 Pillow==7.2.0
 pipenv==2020.8.13
 psutil==5.7.0
