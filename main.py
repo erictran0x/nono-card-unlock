@@ -38,10 +38,12 @@ def main(e, p):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Automate the nono card game')
+    parser.add_argument('--email', help='Your eagate email')
+    parser.add_argument('--password', help='Your eagate password')
     parser.add_argument('--debug', action='store_const', const=True, default=False, help='Enable debug logging level')
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO,
                         format='%(asctime)s - %(levelname)s: %(message)s')
-    email = input('Enter eagate email: ')
-    password = getpass('Enter eagate password: ')
+    email = args.email or input('Enter eagate email: ')
+    password = args.password or getpass('Enter eagate password: ')
     main(email, password)
