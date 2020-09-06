@@ -8,7 +8,7 @@ import signal
 
 
 def process_image_url(url):
-    img = img_manip.load_image(url)   # Load captcha
+    img = img_manip.load_image(url)  # Load captcha
     img = img_manip.remove_background(img)
     vals = img_manip.get_stat_values(img)
     del img
@@ -90,7 +90,6 @@ class EAGateClient:
             self.login()  # Re-login and redo card pick
             self.pick_card(ind)
         elif '<div class="card-inner">' in data:  # Page loaded successfully
-            logging.info(f'Card game available. Picking card {ind}...')
             soup = BeautifulSoup(data, 'html.parser')  # Parse response text as HTML object
             c_type = soup.find('div', class_='card-inner').p.img['src'][-10:-9]
             t_id = soup.find(id='id_initial_token')['value']
@@ -101,9 +100,12 @@ class EAGateClient:
             })
             data = r.text
             soup = BeautifulSoup(data, 'html.parser')
-            win = '3' in soup.find('div', class_='card-result', id='card').div.em.string
-            logging.info(f'You {"won" if win else "lost"}. '
-                         f'You now have {self.get_stamp_count(reload=False, cache=data)} stamp(s).')
+            result_imgs = soup.find('div', class_='card-result', id='card') \
+                .find('div', class_='card-inner').find_all('img')
+            bad_card = result_imgs.index(next((x for x in result_imgs if x['src'].endswith('lose.png')), None))
+            win = bad_card != ind
+            logging.info(f'You {"won" if win else "lost"}. (pick={ind}, bad={bad_card})')
+            logging.info(f'You now have {self.get_stamp_count(reload=False, cache=data)} stamp(s).')
 
     def get_stamp_count(self, reload=True, cache=''):
         if not self.success:  # Check if logged in successfully
